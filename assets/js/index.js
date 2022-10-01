@@ -21,7 +21,22 @@ class MyArray {
     delete this[--this.length];
     return deletedValue;
   }
+  
+  extractOrPush(newArray, item) {
 
+    // проверить, является ли элемент экземпляром MyArray или  массивом
+    if (MyArray.isMyArray(item) || Array.isArray(item)) {
+        // если да, то рекурсивно распаковываем вложенный объект или массив
+        for (let i = 0; i < item.length; i++) {
+            this.extractOrPush(newArray, item[i]);
+        }
+    } else {
+    // если нет то просто его ложим
+        newArray.push(item);
+    }
+      
+    return newArray;
+  }
   concat(...items) {
     // создать новый массив
     const newArray = new MyArray();
@@ -32,16 +47,7 @@ class MyArray {
     }
     // положить все аргументы которые нам дали
     for (let i = 0; i < items.length; i++) {
-      // проверить, является ли элемент экземпляром MyArray
-      if (MyArray.isMyArray(items[i])) {
-        // если да то мы по циклу запихиваем содержание этого MyArray
-        for (let j = 0; j < items[i].length; j++) {
-          newArray.push(items[i][j]);
-        }
-      } else {
-        // если нет то просто его ложим
-        newArray.push(items[i]);
-      }
+        this.extractOrPush(newArray, items[i]);
     }
     // вернуть новый массив
     return newArray;
@@ -69,15 +75,17 @@ class MyArray {
 const myArr = new MyArray();
 myArr.push(10, 20, 30);
 const myArr1 = new MyArray();
-myArr1.push(10000, 20000);
-const myArr2 = myArr.concat(null, 40, 50, 60, myArr1);
+myArr1.push(10000, 20000, [1, 2, [3, 4, 5]]);
+const myArr2 = myArr.concat(null, 40, 50, 60, myArr1).concat(6, [7, 8, [9, 10, 11]]);
 
-const arr = [1, 2];
-const arr2 = arr.concat(50, 60, true, ['test', undefined, null]);
-arr.unshift(10);
+//const myArr2 = myArr.concat(6, [7, 8, [9, 10, 11]]);
 
-for (const item of myArr) {
-  console.log('myArr');
-  console.log(item);
-  console.log('myArr');
-}
+//const arr = [1, 2];
+//const arr2 = arr.concat(50, 60, true, ['test', undefined, null]);
+//arr.unshift(10);
+
+// for (const item of myArr) {
+//   console.log('myArr');
+//   console.log(item);
+//   console.log('myArr');
+// }
