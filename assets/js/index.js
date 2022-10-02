@@ -112,6 +112,43 @@ class MyArray {
     }
     return deletedValue;
   }
+
+  forEach(f) {
+    if (typeof f !== 'function') throw new TypeError(`${f} is not a function`);
+    for (let i = 0; i < this.length; i++) {
+      f(this[i], i, this);  
+    }
+    return undefined;
+  }
+  map(f) {
+    if (typeof f !== 'function') throw new TypeError(`${f} is not a function`);
+    const newMyArray = new MyArray();
+    this.forEach((element, index, array) => {
+      newMyArray.push(f(element, index, array));
+    })
+    return newMyArray;
+  }
+  filter(f) {
+    if (typeof f !== 'function') throw new TypeError(`${f} is not a function`);
+    const newMyArray = new MyArray();
+    this.forEach((element, index, array) => {
+      if (f(element, index, array)) {
+        newMyArray.push(element);
+      }   
+    })
+    return newMyArray;
+  }
+  revers() {
+    // создаем временный объект
+    const tmpMyArray = new MyArray();
+    tmpMyArray.push(...this);
+    // очищаем объект
+    this.cleanObject();
+    for (let i = tmpMyArray.length - 1; i >= 0; i--) {
+      this.push(tmpMyArray[i]);
+    }
+    return this;
+  }
 }
 
 
@@ -123,6 +160,17 @@ const myArr2 = myArr.concat(null, 40, 50, 60, myArr1).concat(6, [7, 8, [9, 10, 1
 
 myArr.unshift(40, 50, 60);
 myArr.shift();
+
+myArr.forEach((element, index, array) => {
+  console.log(element);
+  console.log(index);
+  console.log(array);
+})
+
+const mappedMyArray = myArr.map((num, index, obj) => index * num * 2 + obj.length);
+const filteredMyArray = myArr.filter(value => value > 20);
+const reversedMyArray = myArr.revers();
+
 
 //const myArr2 = myArr.concat(6, [7, 8, [9, 10, 11]]);
 
